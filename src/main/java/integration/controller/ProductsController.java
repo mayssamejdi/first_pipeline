@@ -1,8 +1,10 @@
 package integration.controller;
 
 
+import integration.DTO.ProductDto;
 import integration.entities.Products;
 import integration.service.ProductsService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,15 +17,18 @@ import java.util.Optional;
 public class ProductsController {
 
     private final ProductsService productsService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public ProductsController(ProductsService productsService) {
+    public ProductsController(ProductsService productsService, ModelMapper modelMapper) {
 
         this.productsService = productsService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping(path = "/add/{id}")
-    public void addProduct(@RequestBody Products products, @PathVariable Long id) {
+    public void addProduct(@RequestBody ProductDto productsDto, @PathVariable Long id) {
+        Products products = modelMapper.map(productsDto,Products.class);
     this.productsService.addProduct(products,id);
     }
 
@@ -43,8 +48,9 @@ public class ProductsController {
     }
 
     @PutMapping("{id}")
-    public void update(@PathVariable Long id, @RequestBody Products products) {
+    public void update(@PathVariable Long id, @RequestBody ProductDto productDto) {
         Optional<Products> products1 = productsService.findById(id);
+        Products products = modelMapper.map(productDto,Products.class);
         if (products1.isPresent()) {
             productsService.update(id, products);
         } else {

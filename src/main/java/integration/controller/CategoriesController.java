@@ -2,9 +2,10 @@ package integration.controller;
 
 
 
+import integration.DTO.CatgoryDto;
 import integration.entities.Category;
-import integration.entities.Products;
 import integration.service.CategoriesService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +18,17 @@ import java.util.Optional;
 public class CategoriesController {
 
 private  final CategoriesService categoriesService;
-
+private final ModelMapper modelMapper;
     @Autowired
-    public CategoriesController(CategoriesService categoriesService) {
+    public CategoriesController(CategoriesService categoriesService, ModelMapper modelMapper) {
         this.categoriesService = categoriesService;
+
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping(path = "/add")
-    public Category addCategory(@RequestBody Category category) {
-
+    public Category addCategory(@RequestBody CatgoryDto catgoryDto){
+    Category category =modelMapper.map(catgoryDto, Category.class);
         return categoriesService.addCategory(category);
     }
     @CrossOrigin(origins = "http://localhost:4200")
@@ -49,7 +52,8 @@ private  final CategoriesService categoriesService;
         categoriesService.delete(id);
     }
     @PutMapping(path="{id}/update")
-    public Category updateCategory(@RequestBody Category category,@PathVariable long id){
+    public Category updateCategory(@RequestBody CatgoryDto categoryDto,@PathVariable long id){
+        Category category = modelMapper.map(categoryDto,Category.class);
         return categoriesService.updateCategory(id,category);
     }
 
