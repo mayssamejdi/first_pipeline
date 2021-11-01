@@ -7,6 +7,7 @@ import integration.entities.Category;
 import integration.service.CategoriesService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ private final ModelMapper modelMapper;
     }
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_admin')")
     public List<Category> getAllCategory() {
 
 
